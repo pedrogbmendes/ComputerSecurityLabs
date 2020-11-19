@@ -1,0 +1,339 @@
+/*****************************************************************************
+	COMPUTER SECURITY - LAB 1: Identification and Authentication
+
+	Pedro Gonçalo Mendes - pedrogo@student.chalmers.se
+	Mattias Olofsson - gusolomay@student.gu.se
+
+
+In this solution, when a account is blocked a thread is created to handle
+with it. the thread blocks during some time and after that period it updates
+the information in the file and unblocks the account.
+
+Pros: The system doesn't block when one account is blocked, so other users can
+login into the system.
+			All the accounts are blocked the same amount of time (it solves the
+problem with the alarm)
+			we need the store (allocate memory) the information about the account
+that was been blocked but then the allocate memory is free.
+
+Cons: It spends more resources and more time with the thread creation
+			More diffcult to struct and handle the program
+
+*****************************************************************************/
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdio_ext.h>
+#include <string.h>
+#include <signal.h>
+#include <pwd.h>
+#include <sys/types.h>
+#include <crypt.h>
+#include <pthread.h>
+#include "pwent.h"
+
+#define TRUE 1
+
+#define TEMP_BLOCK -1
+#define BLOCK_FOREVER -2
+#define LAST_ATTEMPS -5
+#define IMP_UNBLOCK -6
+
+
+void allo_mem_thre_cre(mypwent *passwddata, char user_check[]);
+
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+
+void sighandler() {
+	//sighandler to ignore keyboard interruptions
+	signal(SIGINT, SIG_IGN);		//ignore crtl+C
+	signal(SIGTSTP, SIG_IGN);		//ignore crtl+Z
+}
+
+
+void *user_block(void * t){
+	/*When he user wrote the wrong password too many time, it's created a thread
+	to handle with the time blocked of this account so the account blocked.
+	After sleep, it updates the user file with the information that some user
+	account that was blocked is now unblock*/
+
+	mypwent  aux = *((mypwent*) t);
+
+	int size;  		/*used to know the size of strings and avoid buffer overflows
+	 and memory problems*/
+
+	//allocating memory to the name
+	size = strlen(((mypwent*)t)->pwname);
+	aux.pwname = (char*) malloc( ( size*(sizeof(char)) ) + 1);
+	strcpy (aux.pwname, ((mypwent*)t)->pwname);
+
+	//allocating memory to the password
+	size = strlen(((mypwent*)t)->passwd);
+	aux.passwd = (char*) malloc( (size*(sizeof(char)) ) + 1);
+	strcpy (aux.passwd, ((mypwent*)t)->passwd);
+
+	//allocating memory to the salt
+	size = strlen(((mypwent*)t)->passwd_salt);
+	aux.passwd_salt = (char*)malloc((size*(sizeof(char))) + 1);
+	strcpy (aux.passwd_salt, ((mypwent*)t)->passwd_salt);
+
+
+	free( ((mypwent*)t)->pwname );
+	free( ((mypwent*)t)->passwd );
+	free( ((mypwent*)t)->passwd_salt );
+	free( ((mypwent*)t) );
+
+	/*thread is blocked during 20 seconds- the user has to wait -
+	for the demonstration we only blocked the system during 20 seconds
+	(in order to don't have to wait a lot of time) but in real systems,
+	the system should be blocked during more time, for example, 5 or 10 minutes*/
+	sleep(30);
+	aux.pwfailed = -5;
+
+	pthread_mutex_lock( &lock );   // RESTRICTED
+
+	int veri = mysetpwent(aux.pwname, &aux);
+	if (veri == -1){
+		printf("Error in Myserpwent");
+		exit(0);
+	}
+	pthread_mutex_unlock( &lock );   // END RESTRICTED
+
+
+	free( aux.pwname );
+	free( aux.passwd );
+	free( aux.passwd_salt );
+
+	pthread_exit(NULL);
+
+}
+
+
+int main(int argc, char *argv[]) {
+
+	mypwent *passwddata;
+
+	char important[LENGTH] = "***IMPORTANT***";
+	int veri;
+	char user[LENGTH];
+	char user_check[LENGTH];
+	char prompt[] = "password: ";
+	char *user_pass;
+	char *crypt_pass;
+	char salt[2];
+
+	sighandler();
+
+	while (TRUE) {
+		/*check what important variable contains part of buffer overflow test */
+		printf("Value of variable 'important' before input of login name: %s\n",
+				important);
+
+		//empty strings
+		strcpy(user, "");
+		strcpy(user_check, "");
+
+		printf("login: ");
+
+		/*with the function fgets, we prevent buffer overflows of the string user
+		this functions only stores the last LENGTH-1 charecters read from stdin
+		(keyboard) in the string*/
+		if (fgets(user, LENGTH, stdin) == NULL)
+			exit(0);
+		sscanf(user, "%s", user_check);
+
+		/* check to see if important variable is intact after input of login name*/
+		printf("Value of variable 'important' after input of login name: %*.*s\n",
+				LENGTH - 1, LENGTH - 1, important);
+
+		//verify if the user exist and in case afirmative returns the data
+		passwddata = mygetpwnam(user_check);
+
+		if (passwddata == NULL) {
+			//username doesn't exist
+			printf("Login Incorrect - Username does not exist \n");
+		}else{
+			//passwddata != NULL -> username exists
+
+			if (passwddata->pwfailed == TEMP_BLOCK){
+				/*some user tried and failled the password too many times
+				so the account is temporarily blocked*/
+				printf("Your account is blocked. You have to wait\n");
+
+			}else if (passwddata->pwfailed == IMP_UNBLOCK){
+				//account id blocked forever
+				printf("Your account is blocked forever. \n");
+
+			}else{
+
+			 	if (passwddata->pwfailed == LAST_ATTEMPS){
+					printf("Your account probabily was been compromised. You have 3 more attempts until it blocks\n" );
+				}
+
+				/*wait for the user writes the password
+				text is not “echoed” on the terminal*/
+				user_pass = getpass(prompt);
+
+				/*encrypt user_pass -  salt is a two-character string chosen
+				from the set [a-zA-Z0-9./].  This string is used to perturb the
+				algorithm in  one of 4096 different ways.*/
+
+				/*we use strncpy only to copy 2 charecters are copied and prevent
+				buffer overflows*/
+				strncpy(salt, passwddata->passwd_salt, 2);
+				crypt_pass = crypt(user_pass, salt);
+
+
+				if (!strcmp(crypt_pass, passwddata->passwd)) {
+					//if the password is correct
+
+					printf(" Welcome to your system! :)\n");
+
+					//print the failed attempts
+					if (passwddata->pwfailed < BLOCK_FOREVER){
+						//you fail the first 5 tries
+						printf("Number of failed attempts= %d\n",(passwddata->pwfailed+10));
+					}else{
+						printf("Number of failed attempts = %d\n", passwddata->pwfailed);
+					}
+
+					passwddata->pwage = passwddata->pwage + 1;
+
+					if((passwddata->pwage>10) || (passwddata->pwfailed < BLOCK_FOREVER)){
+						printf("ALERT - You have to change the password\n");
+						printf("Entry the new password:\n");
+
+						user_pass = getpass(prompt); //new password
+						strncpy(salt, passwddata->passwd_salt, 2);
+						crypt_pass = crypt(user_pass, salt);	//encryption
+						passwddata->passwd = crypt_pass;
+						passwddata->pwage = 1;
+					}
+
+					passwddata->pwfailed = 0;
+
+					veri = mysetpwent(user_check, passwddata);
+					if (veri == -1){
+						printf("Error in Myserpwent");
+						exit(0);
+					}
+
+					/*  check UID, see setuid(2) */
+					if(setuid(passwddata->uid) != 0 ){
+						perror("Error on UID: ");
+					}
+
+					/*  start a shell, use execve(2) */
+					char *newargv[] = {NULL};
+					newargv[0] = "/bin/sh";
+					newargv[1] = NULL;
+
+					if(fork() == 0){
+						if( execve("/bin/sh", newargv, NULL) == -1){
+							perror("Error on execve: ");
+						}
+					}else{
+						sleep(30);
+						pid_t pid = getpid();
+						kill(pid, SIGKILL);
+		
+					}
+				}else{
+					//if the password is incorrect
+
+					//increment the number of failed attemps
+					passwddata->pwfailed = passwddata->pwfailed + 1;
+
+					if (passwddata->pwfailed <= BLOCK_FOREVER){
+
+						if(passwddata->pwfailed == BLOCK_FOREVER){
+							//account  is blocked
+							printf("Your account is blocked forever. \n");
+							passwddata->pwfailed = IMP_UNBLOCK;
+						}else{
+							//you have 3 more chances to write the correct password
+							printf("Password Incorrect - Last attemps \n");
+
+						}
+						veri = mysetpwent(user_check, passwddata);
+						if (veri == -1){
+							printf("Error in Myserpwent");
+							exit(0);
+						}
+
+					} else if( (passwddata->pwfailed) < 5 && (passwddata->pwfailed) > 0){
+						//password incorrect (first 5 attemps)
+						printf("Login Incorrect - try  again - you have %d more  chances\n",
+								(5-passwddata->pwfailed));
+
+						veri = mysetpwent(user_check, passwddata);
+						if (veri == -1){
+							printf("Error in Myserpwent");
+							exit(0);
+						}
+
+					}else if((passwddata->pwfailed) >= 5){
+						/*you wrote the wrong password too many times
+						now the account is temporarily blocked
+						the user has to wait*/
+						printf("You enter the wrong password to many times\n");
+						passwddata->pwfailed = -1;
+
+						veri = mysetpwent(user_check, passwddata);
+						if (veri == -1){
+							printf("Error in Myserpwent");
+							exit(0);
+						}
+
+						/*function that allocate memory with to store the informarion about
+						the blocked account and create a thread to handle with it*/
+						allo_mem_thre_cre(passwddata,  user_check);
+
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+
+void allo_mem_thre_cre(mypwent *passwddata, char user_check[]) {
+
+	mypwent *data_blocked;
+	pthread_t t_block;
+
+	data_blocked = (mypwent*) malloc(sizeof(mypwent));
+	int size;  		/*used to know the size of strings and avoid buffer overflows
+	 and memory problems*/
+
+	//allocating memory to the name
+	size = strlen(user_check);
+	data_blocked->pwname = (char*) malloc( ( size*(sizeof(char)) ) + 1);
+	strcpy (data_blocked->pwname, user_check);
+
+	data_blocked->uid = passwddata->uid;
+
+	//allocating memory to the password
+	size = strlen(passwddata->passwd);
+	data_blocked->passwd = (char*) malloc( (size*(sizeof(char)) ) + 1);
+	strcpy (data_blocked->passwd, passwddata->passwd);
+
+	//allocating memory to the salt
+	size = strlen(passwddata->passwd_salt);
+	data_blocked->passwd_salt = (char*)malloc((size*(sizeof(char))) + 1);
+	strcpy (data_blocked->passwd_salt, passwddata->passwd_salt);
+
+	data_blocked->pwfailed = passwddata->pwfailed;
+
+	data_blocked->pwage = passwddata->pwage;
+
+	//thread creation
+	int err = pthread_create(&t_block, NULL, user_block, (void*)(data_blocked) );
+	if(err != 0) {
+	   perror("Error in thread creation: ");
+	   exit(-1);
+	}
+
+}

@@ -1,0 +1,19 @@
+the file passdb contains 5 user
+each user has the following syntax
+
+name:uid:passwd:salt:no of failed attempts:password age
+
+the password is encrypt using the function crypt with salt "FP"
+so the real passwords are
+user  -   password
+user1  -   user1.
+user2  -   user2.
+user3  -   user3.
+user4  -   user4.
+user5  -   user5.
+
+user1:1000:FPmadrB54AAfg:FP:0:0
+user2:1000:FPvsosNcFkbF6:FP:0:0
+user3:1000:FPQ29G.VNXmS6:FP:0:0
+user4:1000:FPMJ4WI/cGI9g:FP:0:0
+user5:1000:FPstpdy5osTPs:FP:0:0
