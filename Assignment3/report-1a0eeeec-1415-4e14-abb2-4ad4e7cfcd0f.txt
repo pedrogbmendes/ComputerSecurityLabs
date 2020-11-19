@@ -1,0 +1,123 @@
+I Summary
+=========
+
+This document reports on the results of an automatic security scan.
+The report first summarises the results found.
+Then, for each host, the report describes every issue found.
+Please consider the advice given in each description, in order to rectify
+the issue.
+
+Vendor security updates are not trusted.
+
+Overrides are on.  When a result has an override, this report uses the
+threat of the override.
+
+Notes are included in the report.
+
+This report might not show details of all issues that were found.
+It only lists hosts that produced issues.
+Issues with the threat level "Debug" are not shown.
+
+This report contains all 5 results selected by the
+filtering described above.  Before filtering there were 5 results.
+
+Scan started: Tue Feb 13 16:30:00 2018 UTC
+Scan ended:   Tue Feb 13 16:30:44 2018 UTC
+
+Host Summary
+************
+
+Host            High  Medium  Low  Log  False Positive
+192.168.1.10       0       0    0    5               0    rome.secnet
+Total: 1           0       0    0    5               0
+
+
+II Results per Host
+===================
+
+Host 192.168.1.10
+*****************
+
+Scanning of this host started at: 
+Number of results: 5
+
+Port Summary for Host 192.168.1.10
+----------------------------------
+
+Service (Port)          Threat Level
+general/HOST-T          Log
+general/icmp            Log
+general/tcp             Log
+
+Security Issues for Host 192.168.1.10
+-------------------------------------
+
+Issue
+-----
+NVT:    Host Summary
+OID:    1.3.6.1.4.1.25623.1.0.810003
+Threat: Log (CVSS: 0.0)
+Port:   general/HOST-T
+
+Description:
+traceroute:192.168.1.1,?
+TCP ports:
+UDP ports:
+
+
+Issue
+-----
+NVT:    ICMP Timestamp Detection
+OID:    1.3.6.1.4.1.25623.1.0.103190
+Threat: Log (CVSS: 0.0)
+Port:   general/icmp
+
+Description:
+ Summary:
+ The remote host responded to an ICMP timestamp request. The Timestamp Reply is
+an ICMP message which replies to a Timestamp message. It consists of the
+originating timestamp sent by the sender of the Timestamp as well as a receive
+timestamp and a transmit timestamp. This information could theoretically be used
+to exploit weak time-based random number generators in other services.
+
+References:
+  CVE: CVE-1999-0524
+  Other: 
+    URL:http://www.ietf.org/rfc/rfc0792.txt
+
+
+Issue
+-----
+NVT:    Checks for open udp ports
+OID:    1.3.6.1.4.1.25623.1.0.103978
+Threat: Log (CVSS: 0.0)
+Port:   general/tcp
+
+Description:
+Open UDP ports: [None found]
+
+
+Issue
+-----
+NVT:    Traceroute
+OID:    1.3.6.1.4.1.25623.1.0.51662
+Threat: Log (CVSS: 0.0)
+Port:   general/tcp
+
+Description:
+Here is the route from 192.168.1.1 to 192.168.1.10:
+192.168.1.1
+?
+
+
+Issue
+-----
+NVT:    Checks for open tcp ports
+OID:    1.3.6.1.4.1.25623.1.0.900239
+Threat: Log (CVSS: 0.0)
+Port:   general/tcp
+
+Description:
+Open TCP ports: [None found]
+
+

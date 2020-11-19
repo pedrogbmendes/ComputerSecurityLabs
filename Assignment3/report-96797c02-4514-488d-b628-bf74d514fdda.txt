@@ -1,0 +1,460 @@
+I Summary
+=========
+
+This document reports on the results of an automatic security scan.
+The report first summarises the results found.
+Then, for each host, the report describes every issue found.
+Please consider the advice given in each description, in order to rectify
+the issue.
+
+Vendor security updates are not trusted.
+
+Overrides are on.  When a result has an override, this report uses the
+threat of the override.
+
+Notes are included in the report.
+
+This report might not show details of all issues that were found.
+It only lists hosts that produced issues.
+Issues with the threat level "Debug" are not shown.
+
+This report contains all 36 results selected by the
+filtering described above.  Before filtering there were 36 results.
+
+Scan started: Tue Feb 13 15:37:19 2018 UTC
+Scan ended:   Tue Feb 13 15:38:18 2018 UTC
+
+Host Summary
+************
+
+Host            High  Medium  Low  Log  False Positive
+192.168.1.10       0       0    0   36               0
+Total: 1           0       0    0   36               0
+
+
+II Results per Host
+===================
+
+Host 192.168.1.10
+*****************
+
+Scanning of this host started at: 
+Number of results: 36
+
+Port Summary for Host 192.168.1.10
+----------------------------------
+
+Service (Port)          Threat Level
+domain (53/tcp)         Log
+general/tcp             Log
+http (80/tcp)           Log
+http-alt (8080/tcp)     Log
+imap (143/tcp)          Log
+imaps (993/tcp)         Log
+microsoft-ds (445/tcp)  Log
+netbios-ssn (139/tcp)   Log
+pop3 (110/tcp)          Log
+pop3s (995/tcp)         Log
+ssh (22/tcp)            Log
+
+Security Issues for Host 192.168.1.10
+-------------------------------------
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   domain (53/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   domain (53/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   domain (53/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    Simple TCP portscan in NASL
+OID:    1.3.6.1.4.1.25623.1.0.80112
+Threat: Log (CVSS: 0.0)
+Port:   general/tcp
+
+Description:
+Host have 10 TCP port(s) open in given port range. 
+
+
+Issue
+-----
+NVT:    Simple TCP portscan in NASL
+OID:    1.3.6.1.4.1.25623.1.0.80112
+Threat: Log (CVSS: 0.0)
+Port:   general/tcp
+
+Description:
+This portscanner is EXPERIMENTAL and you should NOT RELY ON it if you don't know!
+ what you're doing. If you are sure what you're doing - you should turn on exper!
+imental_scripts option in preferences in order to turn off this warning.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   http (80/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   http (80/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   http (80/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   http-alt (8080/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   http-alt (8080/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   http-alt (8080/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   imap (143/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   imap (143/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   imap (143/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   imap (143/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   imaps (993/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   imaps (993/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   imaps (993/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   microsoft-ds (445/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   microsoft-ds (445/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   microsoft-ds (445/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   microsoft-ds (445/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   netbios-ssn (139/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   netbios-ssn (139/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   netbios-ssn (139/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   netbios-ssn (139/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   pop3 (110/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   pop3 (110/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   pop3 (110/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   pop3 (110/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   pop3s (995/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   pop3s (995/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   pop3s (995/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   ssh (22/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   ssh (22/tcp)
+
+Description:
+Open port.
+
+
+Issue
+-----
+NVT:    
+OID:    0
+Threat: Log
+Port:   ssh (22/tcp)
+
+Description:
+Open port.
+
+
